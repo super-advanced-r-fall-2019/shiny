@@ -1,0 +1,39 @@
+---
+title: "Layouts"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+RShiny has lots of different options for layout. In fact, if you know how to write HTML and/or CSS, you can have about as much control as you want. But for most people most of the time, the built in options are sufficient. 
+
+The default layout is `sidebarLayout()`, a single page with a sidebar for inputs and outputs (e.g `runExample("01_hello")`). 
+
+We will explore some other layouts in the exercises for this section, and definitely check out the example for this section. 
+
+##### Types of layouts
+  * `fluidRow`: You can make a fluid row and fill it with `column()`s. Columns take `width` as an argument. Screens are 12-boxes wide in Shiny. So, for example, you could have `column(4, "blah")` and `column(8, "blah")` but not `column(10, "blah")` and `column(5, "blah")`. If you are using `fluidRow` you should also be using `fluidPage`. 
+  * `sidebarLayout`: This is the default. You give it a `sidebarPanel()` which can go on either side of a `mainPanel()`.
+  * `tabsetPanel`
+  * `navlistPanel`
+  * `navbarPage`
+  
+You can also nest layouts. For instance, this app has is one big `tabPanel()` which delineates all the pages (e.g. "Motivation"). Within that there are `tabsetPanels()` which include tabs for the text, an example app, and in some cases the exercises. Then the app itself may have any number of layouts.
+  
+### Themes
+
+You can easily alter the overall appearance of your Shiny application using the `shinythemes` package, which contains CSS themes ready to use with Shiny.
+
+You can find out more and see examples on the [shinythemes homepage](http://rstudio.github.io/shinythemes/), or by running the example for this section which includes a live theme selector. 
+
+This app uses Yeti. 
+
+### Embedding text
+
+You can include various kinds of text files using `includeText()`, `includeHTML()`, and `includeMarkdown()`. You can also include text directly into RShiny using `helpText()` or HTML tags including `p()`, which creates a new paragraph. You can find a glossary of many useful HTML tags [here](https://shiny.rstudio.com/articles/tag-glossary.html). 
+
+

@@ -1,0 +1,43 @@
+---
+title: "Mapping"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Like interactive plots, interactive maps are an attractive feature of Shiny and friends. A nice package for this is `Leaflet` (see [this](https://rstudio.github.io/leaflet/shiny.html)). We could spend a whole session on each of this package alone, but here is a very brief introduction to `Leaflet`. 
+
+### Leaflet
+
+Here is an example which renders a map of central Europe with randomly distributed points. Instead of `renderPlot()` use `renderLeaflet()` and associated arguments. 
+
+```{r, eval = FALSE}
+r_colors <- rgb(t(col2rgb(colors()) / 255))
+names(r_colors) <- colors()
+
+ui <- fluidPage(
+  leafletOutput("mymap"),
+  p(),
+  actionButton("recalc", "New points")
+)
+
+server <- function(input, output) {
+  points <- eventReactive(input$recalc, {
+    cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
+  }, ignoreNULL = FALSE)
+
+  output$mymap <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+        options = providerTileOptions(noWrap = TRUE)
+      ) %>%
+      addMarkers(data = points())
+  })
+}
+
+shinyApp(ui, server)
+```

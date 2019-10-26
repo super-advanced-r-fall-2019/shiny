@@ -1,0 +1,14 @@
+---
+title: "Publishing"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+You have a beautiful Shiny app you are ready to share with the world. Now what? Obviously you can share the R code, but you can also host your app online. The simplest way to do that is through [shinyapps.io](https://www.shinyapps.io/). shinyapps.io requires you to make an account and there are several subscription plans. All you have to do is hit `publish` when you have the app running locally and input your account information and desired url. For free, you get up to 5 applications and up to 25 active hours. If you expect more traffic, you can get more active hours with one of the paid plans. 
+
+If you are hosting a big app and/or you expect a lot of traffic you are better off managing the hosting yourself. 

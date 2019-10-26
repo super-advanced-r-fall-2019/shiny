@@ -1,0 +1,116 @@
+---
+title: "Plotting"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Plotting in RShiny works just as you would expect it to. You can insert both static plots or reactive ones. See some of the previous apps we've discussed for examples. 
+
+An additional feature of RShiny is **interactive** plots. You can easily select points and regions, zoom in and out, etc. To do this, we tap into left clicks, double clicks, clicking and dragging. 
+
+### Simple example
+
+The following example demonstrates how to use clicks, double-clicks, hover, and brush motions. They just print the results, but you can imagine how these inputs could be useful in other apps. 
+
+```{r, eval = FALSE}
+ui <- basicPage(
+  plotOutput("plot1",
+    click = "plot_click",
+    dblclick = "plot_dblclick",
+    hover = "plot_hover",
+    brush = "plot_brush"
+  ),
+  verbatimTextOutput("info")
+)
+
+server <- function(input, output) {
+  output$plot1 <- renderPlot({
+    plot(mtcars$wt, mtcars$mpg)
+  })
+
+  output$info <- renderText({
+    xy_str <- function(e) {
+      if(is.null(e)) return("NULL\n")
+      paste0("x=", round(e$x, 1), " y=", round(e$y, 1), "\n")
+    }
+    xy_range_str <- function(e) {
+      if(is.null(e)) return("NULL\n")
+      paste0("xmin=", round(e$xmin, 1), " xmax=", round(e$xmax, 1), 
+             " ymin=", round(e$ymin, 1), " ymax=", round(e$ymax, 1))
+    }
+
+    paste0(
+      "click: ", xy_str(input$plot_click),
+      "dblclick: ", xy_str(input$plot_dblclick),
+      "hover: ", xy_str(input$plot_hover),
+      "brush: ", xy_range_str(input$plot_brush)
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+### More complicated examples
+
+You'll notive in the above examples that they just report the exact location you click, hover, or brush over. What if we want to select actual points? For that we can use functions `nearPoints()` and `brushedPoints()`. 
+
+Here is an example using `nearPoints()`:
+
+```{r, eval = FALSE}
+ui <- basicPage(
+  plotOutput("plot1", click = "plot_click"),
+  verbatimTextOutput("info")
+)
+
+server <- function(input, output) {
+  output$plot1 <- renderPlot({
+    plot(mtcars$wt, mtcars$mpg)
+  })
+
+  output$info <- renderPrint({
+    # With base graphics, need to tell it what the x and y variables are.
+    nearPoints(mtcars, input$plot_click, xvar = "wt", yvar = "mpg")
+    # nearPoints() also works with hover and dblclick events
+  })
+}
+
+shinyApp(ui, server)
+```
+
+By default, `nearPoints()` returns rows of data that are within 5 pixels of the mouse event, sorted by distance. So think about the zoom on your plots, or else adjust the radius using the `threshold` argument.
+
+If you’re using plots created by ggplot2, it's not necessary to specify xvar and yvar, since they can be autodetected. 
+
+Here is an example using `brushedPoints()`:
+
+```{r, eval = FALSE}
+ui <- basicPage(
+  plotOutput("plot1", brush = "plot_brush"),
+  verbatimTextOutput("info")
+)
+
+server <- function(input, output) {
+  output$plot1 <- renderPlot({
+    plot(mtcars$wt, mtcars$mpg)
+  })
+
+  output$info <- renderPrint({
+    # With base graphics, need to tell it what the x and y variables are.
+    brushedPoints(mtcars, input$plot_brush, xvar = "wt", yvar = "mpg")
+  })
+}
+
+shinyApp(ui, server)
+```
+
+An important thing to note with this example is that these functions will only work if the x and y variables are present in the data frame. If you have a plot where a the x position is a transformation of a column of data, then these functions won’t work. In that case, you may want to calculate a new column and store it in the data frame. 
+
+### Even more complicated...
+
+You can do even more things like this in `Plotly` (see [this](https://plotly-r.com/overview.html])). 
