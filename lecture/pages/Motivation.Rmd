@@ -1,0 +1,39 @@
+---
+title: "Motivation"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Shiny is an R package that lets you build interactive web apps. These are great tools for data visualization, communication, and outreach. For inspiration, check out the [RShiny gallery](https://shiny.rstudio.com/gallery/) and [Show Me Shiny](https://www.showmeshiny.com/). There are also some example apps built in to RShiny. You can run them using:
+
+```{r motivation-ex, echo = TRUE, eval = FALSE}
+library(shiny)
+runExample("01_hello")      # a histogram
+runExample("02_text")       # tables and data frames
+runExample("03_reactivity") # a reactive expression
+runExample("04_mpg")        # global variables
+runExample("05_sliders")    # slider bars
+runExample("06_tabsets")    # tabbed panels
+runExample("07_widgets")    # help text and submit buttons
+runExample("08_html")       # Shiny app built from HTML
+runExample("09_upload")     # file upload wizard
+runExample("10_download")   # file download wizard
+runExample("11_timer")      # an automated timer
+```
+
+I have also written some additional example apps centered around particular Shiny skills. Find them in the GitHub repo for today. 
+
+There is a bit of a learning curve to writing Shiny code, but once you get the gist of the structure you can make apps as simple or sophisticated as you like. We will go over all the basics today, and build up to writing the below app:
+
+![](lecture/img/ultimate-test.png) 
+
+Today we will focus on building standalone apps, but it's worth noting that you can also embed simple Shiny things into RMarkdown to make interactive documents or even slides! 
+
+**Disclaimer:** We will build some ugly ugly things today, but fret not! This is a good way to learn! We will talk about beautification at the end. 
+  
+

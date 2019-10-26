@@ -1,0 +1,127 @@
+---
+title: "Reactions"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Hands down, understanding reactivity is the hardest part of working in RShiny. 
+
+In Shiny, there are three types of objects: reactive sources, reactive conductors, and reactive endpoints. 
+
+![](lecture/img/roles.png) 
+
+### Simple...
+
+The simplest case is just a reactive source (e.g. some selection a user makes, accessed via `input$whatever`) and a reactive endpoint (e.g. some output, accessed via `output$AssociatedWhatever`). That is what we have been doing up until this point. Recall the server function from the Fundamentals example:
+
+```{r}
+server <- function(input, output) {
+  # plot
+  output$plot1 <- renderPlot({
+    selected_data <- selectData(input$dat)
+    plot(selected_data$series,
+         col = input$color, ylab = input$dat, lwd = 2)
+  })
+  # description
+  output$txtout <- renderText({
+    selected_data <- selectData(input$dat)
+    selected_data$description})
+}
+```
+
+![](lecture/img/simplest.png) 
+
+Any time we change `input$color`, for example, by selecting a new color from the radio buttons, `output$plot1` re-runs. 
+
+### More complicated...
+
+So what is a reactive conductor? Basically, it's another reactive element in between a reactive source and a reactive endpoint. That is, it is dependent on something else but something else also depends on it. They are useful for ensuring your app runs reasonably quickly if you are doing a lot of computationally expensive reactions. Consider the following example: 
+
+```{r}
+# Calculate nth number in Fibonacci sequence
+fib <- function(n) ifelse(n<3, 1, fib(n-1)+fib(n-2))
+
+server <- function(input, output) {
+  output$nthValue    <- renderText({ fib(as.numeric(input$n)) })
+  output$nthValueInv <- renderText({ 1 / fib(as.numeric(input$n)) })
+}
+```
+
+![](lecture/img/fib_no_conductor.png) 
+
+The `fib()` function is **very** inefficient so we'd like to minimize the number of times we run it. But here we are running it twice! We could reduce the amount of computation by inserting a reactive conductor like so:
+
+```{r}
+fib <- function(n) ifelse(n<3, 1, fib(n-1)+fib(n-2))
+
+server <- function(input, output) {
+  currentFib         <- reactive({ fib(as.numeric(input$n)) })
+
+  output$nthValue    <- renderText({ currentFib() })
+  output$nthValueInv <- renderText({ 1 / currentFib() })
+}
+```
+
+![](lecture/img/conductor.png) 
+
+This is much like what you would do writing any kind of code. We have just saved the output of `fib()` to an intermediate variable, and then we work with the intermediate variable. The only thing that makes this different is that you have to wrap it in `reactive({})`. This piece is **very** important, because of scoping. The reactive and non-reactive worlds cannot talk to each other very well. If you take it out, you will get an error.
+
+For more on this - check out [this](https://shiny.rstudio.com/articles/reactivity-overview.html) and [this](https://shiny.rstudio.com/articles/understanding-reactivity.html). 
+
+### Execution order
+
+RShiny apps can get very slow as they grow. Reactive conductors are one way to make them more efficient, but there are others. Where you place commands in your script will determine how many times they are run or re-run. 
+
+The first time you call runApp, Shiny will run everything. 
+
+![](lecture/img/run-once.png) 
+
+Everytime a new user arrives (today this will be a max of one person, but it matters when you host things online). 
+
+![](lecture/img/run-once-per-user.png) 
+
+Then as users interact with widgets and change their values, Shiny will re-run the expressions associated with those reactive objects. If a user is changing many things, this could be pretty computationally expensive. 
+
+![](lecture/img/run-many-times.png) 
+
+For more on this, see [this](https://shiny.rstudio.com/tutorial/written-tutorial/lesson5/). 
+
+### Action buttons
+
+Another way you can control **when** things run to avoid errors is to use `actionButton()`. You insert an action button just like any other widget, but they are unique in that they are not meaningful on their own. They have a value, and that value is observed by either `observeEvent()` or `eventReactive()`. When the value of `actionButton()` changes, they run a **block** of code. One common use of an action button is to delay reactions until a user says "Go". For example, consider the following app from [here](https://shiny.rstudio.com/articles/action-buttons.html): 
+
+```{r, eval = FALSE}
+ui <- fluidPage(
+  actionButton("go", "Go"),
+  numericInput("n", "n", 50),
+  plotOutput("plot")
+)
+
+server <- function(input, output) {
+
+  randomVals <- eventReactive(input$go, {
+    runif(input$n)
+  })
+
+  output$plot <- renderPlot({
+    hist(randomVals())
+  })
+}
+
+shinyApp(ui, server)
+```
+
+Typically, everytime someone changes the `numericInput()` the histogram will update it. We used the action button to delay this update until the user says "Go". This is useful if you want someone to be able to change multiple things at a time without breaking your app. 
+
+**TL;DR** You can speed things along by:
+
+  * taking everything out of the server function that doesn't need to be there (e.g sourcing scripts, loading libraries, reading data)
+  * using reactive conductors to avoid re-running functions 
+
+
+

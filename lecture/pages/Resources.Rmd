@@ -1,0 +1,64 @@
+---
+title: "Resources"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tips
+  * Debugging RShiny is hard. My recommendations are:
+    * start by modifying someone else's code
+    * write and test functions in base R before first. Then render some simple placeholder in Shiny. Then put pieces together.
+    * use `renderTable()` and `renderText()` to make sure you are returning the right things
+    * apparently there is an interactive debugger you can enable with `input$debug`...
+    * when in doubt, create a simple reproducible example
+  * Watch out for what you are naming things! You cannot have duplicate names in input and output. Check this first if you change something and all of a sudden none of your `ui` elements display... 
+  * If building a big app, be thoughtful about your file structure for your own sanity. Also maybe read [this](https://www.inwt-statistics.com/read-blog/best-practice-development-of-robust-shiny-dashboards-as-r-packages.html).
+  * Consider how you are going to [store data](https://shiny.rstudio.com/articles/persistent-data-storage.html). 
+  * Shiny code can be kind of unreadable relative to typical R code. It helps to pick a tab convention and stick to it.
+  * Tidyverse users beware and read [this](https://mastering-shiny.org/action-tidy.html).
+  
+## Links
+  * **[RShiny Cheatsheet](https://shiny.rstudio.com/images/shiny-cheatsheet.pdf)**: quick reference
+  * **[RShiny Gallery](https://shiny.rstudio.com/gallery/)**: tons of useful examples + code to modify
+  * **[Show Me Shiny](https://www.showmeshiny.com/)**: more advanced examples, user submitted, not all have code :(
+  * **[RStuido RShiny tutorial](https://shiny.rstudio.com/tutorial/)**: I prefer the written one but the videos are probably good too
+  * **[Weicheng Zhu's RShiny tutorial](https://bookdown.org/weicheng/shinyTutorial/)**: Another nice tutorial
+  * **[Dean Attalli's bingo card generator](https://daattali.com/shiny/bingo/)**: bad data bingo cards. Dean also maintains an excellent RShiny blog (e.g., [tips](https://deanattali.com/blog/advanced-shiny-tips/)).
+  * **[Mastering Shiny book (beta)](https://mastering-shiny.org/)**: From Hadley himself
+  * **[Shiny app contest](https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/)**: Enter it!
+  
+## Examples around SAFS/UW
+  * [Converse Lab Capture-Recapture Outreach](https://aebratt.shinyapps.io/lincoln-peterson/)
+  * [COASST data visualization](http://explore.coasst.org:3838/Explore-data/)
+  * [SEAS Statistics Outreach](https://sthurner.shinyapps.io/oav1/)
+  * [Buckley Lab microclimate data download](http://microclim.org/)
+  * [MPA simulator from Dan](https://danovando.shinyapps.io/simmpa/). GitHub [here](https://github.com/DanOvando/simmpa)
+  * Megsie!
+  * Others I don't know about? Let me know and I will update
+  
+## A plea and a plug for UX design
+
+Love your user. Respect your user. 
+
+There is an art and a science to interaction design. While it's great that tools like RShiny make it accessible for us to jump right in, do it with thought and care. Ask an expert! We have an opportunity to up the caliber of science communication and data visualization. Make something that is pleasant to use. Is your app visually pleasing? Intuitive? Functional? If/when it breaks, are the error messages informative?
+
+Some humble suggestions:
+
+  * Consult a UX and/or visual designer! You can do this for FREE at UW [here](http://uxdesign.uw.edu/consultations.html).
+  * Consult a data visualization expert!
+  * Consult an educator!
+  * Do user testing!
+  * Read [this](https://www.edwardtufte.com/tufte/books_vdqi)
+  * and [this](universalprinciplesofdesign.com/books/)
+  * [Google material design guidelines](https://material.io/components/)
+  
+
+
+  
+  
+  

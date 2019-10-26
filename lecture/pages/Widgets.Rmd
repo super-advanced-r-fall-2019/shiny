@@ -1,0 +1,90 @@
+---
+title: "Widgets"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ususally when you are building an RShiny app, it's because you want to allow users to provide inputs. Widgets are how you do that. 
+
+There are three steps to creating output. First is telling `ui` what widget to create. If we want to create some checkboxes, that looks like:
+
+```{r widgets-ui-input, echo = TRUE, eval = FALSE}
+ui <- fluidPage(
+  # make a group of checkboxes
+  checkboxGroupInput("checkGroup", label = h3("Checkbox group"), 
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+    selected = 1),
+)
+```
+
+That's great, but the checkboxes won't do anything. Next we need to tell `server` what to render. The modification to `server` might look like: 
+
+```{r widgets-serv, echo = TRUE, eval = FALSE}
+server <- function(input, output) {
+  output$value <- renderPrint({ input$checkGroup })
+}
+```
+
+Note that internally, you reference the widget using `input$label_name`. This is different than the title, `input$title_name`, which is printed above the widget. Watch out for this, there are lots of names to keep track of when writing Shiny code. 
+
+Finally, we go back to `ui` and tell it what to print. The complete `ui` might look something like:
+
+```{r widgets-ui-output, echo = TRUE, eval = FALSE}
+ui <- fluidPage(
+  # make a group of checkboxes
+  checkboxGroupInput("checkGroup", label = h3("Checkbox group"), 
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+    selected = 1),
+  # print a vertical space
+  hr(),
+  # print which boxes are selected
+  fluidRow(column(3, verbatimTextOutput("value")))
+)
+```
+
+That's the basic idea, but there are lots of different types of inputs and outputs. Let's look at some examples in the next tab. Much of this code is from RStudio's [Widget Gallery](https://shiny.rstudio.com/gallery/widget-gallery.html) which is an excellent resource.
+
+### Types of Widgets
+
+  * `actionButton`: action button (e.g "Submit" or "Run")
+  * `checkboxGroupInput`:	a group of check boxes
+  * `checkboxInput`:	a single check box
+  * `dateInput`:	a calendar 
+  * `dateRangeInput`:	a pair of calendars for selecting a date range
+  * `fileInput`:	a file upload control wizard
+  * `helpText`:	help text that can be added to an input form
+  * `numericInput`: field to enter numbers
+  * `radioButtons`: set of radio buttons
+  * `selectInput`: box with choices to select from
+  * `sliderInput`: slider bar
+  * `submitButton`:	submit button
+  * `textInput`: field to enter text
+
+### Ways to render
+
+  * `renderDataTable`:	DataTable
+  * `renderImage`:	images (saved as a link to file)
+  * `renderPlot`:	plots
+  * `renderPrint`:	any printed output
+  * `renderTable`:	data frame, matrix, other table like structures
+  * `renderText`:	character strings
+  * `renderUI`:	a Shiny tag object or HTML
+
+### Ways to print
+
+  * `dataTableOutput`:	DataTable
+  * `htmlOutput`:	raw HTML
+  * `imageOutput`:	image
+  * `plotOutput`:	plot
+  * `tableOutput`:	table
+  * `textOutput`:	text
+  * `uiOutput`:	raw HTML
+  * `verbatimTextOutput`:	text, but ugly
+
+Note that you should render and print the same object type. For example, you cannot `renderPlot` a `textOutput`.
+
