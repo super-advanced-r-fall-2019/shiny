@@ -11,6 +11,6 @@ The lecture for today is one big shiny app. You can find it and run it locally o
 
 We will work up to writing the app below and we can add a few extra bells and whistles, time permitting. The solutions are also here, under "ultimate-test". No peeking!
 
-If you are looking for some additional examples check out Megsie's GitHub repo from a rad R-Ladies [here](https://github.com/mcsiple/shinysea).
+If you are looking for some additional examples check out Megsie's GitHub repo from a rad R-Ladies Shiny workshop [here](https://github.com/mcsiple/shinysea).
 
 ![](lecture/img/ultimate-test.png)
